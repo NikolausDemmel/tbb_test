@@ -10,10 +10,11 @@ find_package(Glog REQUIRED)
 message(STATUS "Found glog")
 
 find_package(TBB REQUIRED)
-message(STATUS "TBB_VERSION: ${TBB_VERSION_MAJOR}.${TBB_VERSION_MINOR}")
-message(STATUS "TBB_INTERFACE_VERSION: ${TBB_INTERFACE_VERSION}")
-message(STATUS "TBB_INCLUDE_DIRS: ${TBB_INCLUDE_DIRS}")
-message(STATUS "TBB_LIBRARIES: ${TBB_LIBRARIES}")
+message(STATUS "Found TBB ${TBB_VERSION_MAJOR}.${TBB_VERSION_MINOR} (interface version ${TBB_INTERFACE_VERSION}) headers in: ${TBB_INCLUDE_DIRS} (TBB_LIBRARIES: ${TBB_LIBRARIES})")
+if (TBB_INTERFACE_VERSION LESS 11004)
+  # enable global_control header for earlier TBB versions (Ubuntu 16.04, 18.04)
+  target_compile_definitions(TBB::tbb INTERFACE TBB_PREVIEW_GLOBAL_CONTROL)
+endif()
 
 add_executable(foo foo.cpp)
 
